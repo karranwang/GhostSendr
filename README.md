@@ -24,7 +24,7 @@ git clone https://github.com/karranwang/GhostSendr.git
 ```
 
 ```bash
-cd VoidMailer
+cd GhostSendr
 ```
 
 ```bash

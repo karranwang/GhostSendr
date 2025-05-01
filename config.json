@@ -1,0 +1,8 @@
+{
+  "smtp_host": "your_smtp_host",
+  "smtp_port": 465,
+  "smtp_user": "your_smtp_user",
+  "smtp_pass": "your_smtp_pass",
+  "from_name": "Title",
+  "subject": "Subject"
+}

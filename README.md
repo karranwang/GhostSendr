@@ -1,5 +1,7 @@
 ![GhostSendr](GhostSendr.jpg) 
 
+![Build](https://img.shields.io/badge/Built%20with-Python-Blue)
+
 # GhostSendr
 
 **GhostSendr** is a lightweight Python-based SMTP mailer tool designed for both manual and mass email sending. It supports HTML content, SSL SMTP connections, multithreading, and is configured via external JSON and TXT files for maximum flexibility.

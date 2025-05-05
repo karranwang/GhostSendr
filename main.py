@@ -1,10 +1,14 @@
 import smtplib
 import json
 import threading
+import time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from pyfiglet import figlet_format
 import os
+
+MAX_THREADS = 5           # Max threads
+DELAY_PER_EMAIL = 5      # Delay per seconds
 
 def banner():
     print(figlet_format("GhostSendr"))
@@ -35,17 +39,28 @@ def send_email(smtp_info, to_email, html_content):
     except Exception as e:
         print(f"[-] Failed to send to {to_email}: {e}")
 
+def thread_limiter(sem, smtp_info, email, html_content):
+    with sem:
+        send_email(smtp_info, email, html_content)
+        time.sleep(DELAY_PER_EMAIL)
+
 def mass_mode(smtp_info, html_content):
-    if not os.path.exists("mailist.txt"):
-        print("mailist.txt not found!")
+    filename = input("Enter mailist filename (e.g. mailist.txt): ").strip()
+    if not os.path.exists(filename):
+        print(f"File '{filename}' not found!")
         return
-    with open("mailist.txt", "r") as f:
+
+    with open(filename, "r") as f:
         emails = [line.strip() for line in f if line.strip()]
+
+    sem = threading.Semaphore(MAX_THREADS)
     threads = []
+
     for email in emails:
-        t = threading.Thread(target=send_email, args=(smtp_info, email, html_content))
+        t = threading.Thread(target=thread_limiter, args=(sem, smtp_info, email, html_content))
         threads.append(t)
         t.start()
+
     for t in threads:
         t.join()
 
@@ -54,6 +69,7 @@ def manual_mode(smtp_info, html_content):
     emails = [e.strip() for e in input_emails.split(",") if e.strip()]
     for email in emails:
         send_email(smtp_info, email, html_content)
+        time.sleep(DELAY_PER_EMAIL)
 
 def main():
     banner()
